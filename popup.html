@@ -1,0 +1,249 @@
+// popup.html 按鈕事件處理邏輯（Manifest V3 兼容版）
+document.addEventListener('DOMContentLoaded', () => {
+    // 初始化按鈕事件監聽器
+    setupButtonEventListeners();
+    // 加載當前頁面設置到表單
+    loadCurrentSettings();
+});
+
+// 設置所有按鈕的事件監聽器
+function setupButtonEventListeners() {
+    // 字體大小調整按鈕
+    document.getElementById('fontIncrease').addEventListener('click', () => {
+        sendMessageToActiveTab({ action: 'adjustFontSize', delta: 2 });
+    });
+
+    document.getElementById('fontDecrease').addEventListener('click', () => {
+        sendMessageToActiveTab({ action: 'adjustFontSize', delta: -2 });
+    });
+
+    document.getElementById('fontReset').addEventListener('click', () => {
+        sendMessageToActiveTab({ action: 'resetFont' });
+    });
+
+    // 顏色重置按鈕
+    document.getElementById('colorReset').addEventListener('click', async () => {
+        try {
+            // 獲取全局默認顏色設置
+            const result = await chrome.storage.local.get(['globalSettings']);
+            const defaultColors = result.globalSettings || {
+                textColor: '#000000',
+                backgroundColor: '#ffffff'
+            };
+
+            // 更新表單
+            document.getElementById('fontColor').value = defaultColors.textColor;
+            document.getElementById('bgColor').value = defaultColors.backgroundColor;
+
+            // 應用設置
+            applyCurrentSettings();
+        } catch (error) {
+            console.error('重置顏色失敗:', error);
+        }
+    });
+
+    // 顏色選擇器邏輯
+    document.getElementById('fontColorPicker').addEventListener('click', () => {
+        openColorPicker('fontColor');
+    });
+
+    document.getElementById('bgColorPicker').addEventListener('click', () => {
+        openColorPicker('bgColor');
+    });
+
+    // 進階設置按鈕
+    document.getElementById('saveTextSize').addEventListener('click', async () => {
+        await saveSiteSpecificSetting('fontSize');
+    });
+
+    document.getElementById('saveTextColor').addEventListener('click', async () => {
+        await saveSiteSpecificSetting('textColor');
+    });
+
+    document.getElementById('saveFontType').addEventListener('click', async () => {
+        await saveSiteSpecificSetting('fontFamily');
+    });
+
+    document.getElementById('saveBgColor').addEventListener('click', async () => {
+        await saveSiteSpecificSetting('backgroundColor');
+    });
+
+    document.getElementById('saveConfig').addEventListener('click', () => {
+        chrome.runtime.openOptionsPage();
+    });
+
+    // 套用設定按鈕
+    document.getElementById('applySettings').addEventListener('click', () => {
+        applyCurrentSettings();
+    });
+}
+
+// 打開顏色選擇器並同步值
+function openColorPicker(inputId) {
+    const colorInput = document.createElement('input');
+    colorInput.type = 'color';
+    colorInput.value = document.getElementById(inputId).value;
+
+    colorInput.addEventListener('change', (e) => {
+        document.getElementById(inputId).value = e.target.value;
+        // 即時應用顏色變更
+        applyCurrentSettings();
+    });
+
+    colorInput.click();
+}
+
+// 加載當前頁面的設置到表單
+async function loadCurrentSettings() {
+    try {
+        // 獲取當前激活的標籤頁
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!tab.url) return;
+
+        const url = new URL(tab.url);
+        const hostname = url.hostname;
+
+        // 從後台獲取設置
+        const response = await chrome.runtime.sendMessage({
+            action: 'getSettings',
+            hostname: hostname
+        });
+
+        if (response?.settings) {
+            const settings = response.settings;
+            // 更新表單值
+            document.getElementById('fontColor').value = settings.textColor || '#000000';
+            document.getElementById('bgColor').value = settings.backgroundColor || '#ffffff';
+            document.getElementById('fontFamily').value = settings.fontFamily || 'Default Font';
+            document.getElementById('linkUnderline').checked = settings.underlineLinks !== false;
+            document.getElementById('linkColor').checked = settings.colorLinks !== false;
+        }
+    } catch (error) {
+        console.error('加載當前設置失敗:', error);
+    }
+}
+
+// 應用當前表單設置到頁面
+function applyCurrentSettings() {
+    const settings = {
+        textColor: document.getElementById('fontColor').value,
+        backgroundColor: document.getElementById('bgColor').value,
+        fontFamily: document.getElementById('fontFamily').value,
+        underlineLinks: document.getElementById('linkUnderline').checked,
+        colorLinks: document.getElementById('linkColor').checked
+    };
+
+    sendMessageToActiveTab({
+        action: 'applySettings',
+        settings: settings
+    });
+}
+
+// 保存網站特定設置
+async function saveSiteSpecificSetting(type) {
+    try {
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        if (!tab.url) return;
+
+        const url = new URL(tab.url);
+        const hostname = url.hostname;
+
+        // 獲取當前設置
+        const response = await chrome.runtime.sendMessage({
+            action: 'getSettings',
+            hostname: hostname
+        });
+
+        if (!response?.settings) return;
+
+        // 構建要保存的設置對像
+        const currentSettings = response.settings;
+        const settingsToSave = {
+            ...currentSettings,
+            lastModified: new Date().toISOString()
+        };
+
+        // 根據按鈕類型更新特定設置
+        switch (type) {
+            case 'fontSize':
+                // 字體大小從當前頁面獲取
+                break;
+            case 'textColor':
+                settingsToSave.textColor = document.getElementById('fontColor').value;
+                break;
+            case 'fontFamily':
+                settingsToSave.fontFamily = document.getElementById('fontFamily').value;
+                break;
+            case 'backgroundColor':
+                settingsToSave.backgroundColor = document.getElementById('bgColor').value;
+                break;
+        }
+
+        // 保存設置
+        await chrome.runtime.sendMessage({
+            action: 'saveSettings',
+            hostname: hostname,
+            settings: settingsToSave
+        });
+
+        // 顯示成功通知
+        showNotification(`已保存 ${hostname} 的${getSettingTypeName(type)}設置`);
+    } catch (error) {
+        console.error('保存設置失敗:', error);
+        showNotification('保存設置失敗', 'error');
+    }
+}
+
+// 發送消息到當前激活的標籤頁
+async function sendMessageToActiveTab(message) {
+    try {
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        return await chrome.tabs.sendMessage(tab.id, message);
+    } catch (error) {
+        console.error('發送消息失敗:', error);
+    }
+}
+
+// 顯示臨時通知
+function showNotification(message, type = 'success') {
+    // 移除現有通知
+    const existing = document.getElementById('popup-notification');
+    if (existing) existing.remove();
+
+    // 創建新通知
+    const notification = document.createElement('div');
+    notification.id = 'popup-notification';
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 8px 16px;
+        border-radius: 4px;
+        color: white;
+        font-size: 14px;
+        z-index: 9999;
+        background: ${type === 'success' ? '#4285f4' : '#dc3545'};
+        transition: opacity 0.3s;
+    `;
+
+    document.body.appendChild(notification);
+
+    // 3秒後自動消失
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// 獲取設置類型的顯示名稱
+function getSettingTypeName(type) {
+    const names = {
+        fontSize: '文字大小',
+        textColor: '文字顏色',
+        fontFamily: '字體類型',
+        backgroundColor: '背景顏色'
+    };
+    return names[type] || type;
+}
