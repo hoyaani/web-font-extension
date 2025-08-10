@@ -1,249 +1,488 @@
-// popup.html 按鈕事件處理邏輯（Manifest V3 兼容版）
-document.addEventListener('DOMContentLoaded', () => {
-    // 初始化按鈕事件監聽器
-    setupButtonEventListeners();
-    // 加載當前頁面設置到表單
-    loadCurrentSettings();
-});
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>網頁 Fonts 管理器</title>
+  <style>
+    /* 重置基礎樣式，簡化示例 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft YaHei", sans-serif;
+    }
+    body {
+      width: 600px; /* 彈出頁整體寬度，可按需調整 */
+      padding: 16px;
+      background-color: #fff;
+      border: 1px solid #ddd; /* 增加邊框 */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 增加陰影效果 */
+      border-radius: 8px; /* 增加圓角 */
+    }
+    /* 主容器：橫向兩欄 */
+    .container {
+      display: flex;
+      gap: 20px; /* 兩欄之間的間距 */
+    }
+    .divider {
+      width: 1px;
+      background-color: #ccc;
+      margin: 0 10px;
+    }
+    /* 左欄、右欄基礎樣式 */
+    .left-col, .right-col {
+      flex: 1; /* 讓兩欄平分剩餘空間，也可手動設寬度（如 width: 50% ） */
+    }
+    .left-col {
+      flex: 1;
+      border-right: 1px solid #ccc; /* 垂直分割線 */
+      padding-right: 10px; /* 避免文字貼邊 */
+    }
+    .right-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .section-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 8px;
+        border-left: 4px solid #4285f4;
+        padding-left: 6px;
+        padding: 8px 12px;
+        background-color: #eef4ff;
+        border-radius: 8px;
+    }
+    /* 模塊標題統一風格 */
+    h3 {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 8px;
+      border-left: 4px solid #4285f4;
+      padding-left: 6px;
+    }
+    /* 按鈕組（A+/A- 等） */
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    /* 左欄頂部群組按鈕設定 */
+    .btn-group button {
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      background: #f8f9fa;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+    .btn-group button:hover {
+      background: #f0f0f0;
+    }
+    /* 專門針對這個獨立按鈕的樣式 */
+    .btn-group > button#colorReset {
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      background: #f8f9fa;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 18px;
+      /* width: 100%; 如果需要填滿容器寬度 */
+    }
 
-// 設置所有按鈕的事件監聽器
-function setupButtonEventListeners() {
-    // 字體大小調整按鈕
-    document.getElementById('fontIncrease').addEventListener('click', () => {
-        sendMessageToActiveTab({ action: 'adjustFontSize', delta: 2 });
+    .btn-group > button#colorReset:hover {
+      background: #f0f0f0;
+    }
+    /* 顏色選擇區塊 */
+    .color-setting {
+      margin-bottom: 12px;
+    }
+    .color-setting label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+      color: #555;
+    }
+    .color-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .color-input input[type="text"] {
+      flex: 1;
+      padding: 4px 6px;
+      font-size: 13px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .color-picker {
+      width: 24px;
+      height: 24px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      background-image: url('icons/palette-icon.ico');
+      background-size: 80%;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    /* 複選框區塊 */
+    .checkbox-group {
+      margin-bottom: 16px;
+    }
+    .checkbox-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #555;
+    }
+    /* 字體下拉選擇器 */
+    .font-select {
+      margin-bottom: 16px;
+    }
+    .font-select label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+      color: #555;
+    }
+    .font-select select {
+      width: 100%;
+      padding: 6px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    /* 右欄「進階設定」按鈕組 */
+    .advanced-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .advanced-btns button {
+      text-align: left;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      background: #f8f9fa;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .advanced-btns button:hover {
+      background: #f0f0f0;
+    }
+    /* 底部「套用設定」按鈕 */
+    .apply-btn {
+      width: 100%;
+      padding: 5px;
+      font-size: 20px;
+      color: #fff;
+      background: #4285f4;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .apply-btn:hover {
+      background: #3367d6;
+    }
+  </style>
+</head>
+<body>
+  <!-- 主容器：橫向切分左、右欄 -->
+  <div class="container">
+    <!-- 左欄：放「字體調節、顏色選擇、複選框、字體下拉」 -->
+    <div class="left-col">
+      <!-- 1. 字體大小調節按鈕（A+/A-/回復預設） -->
+      <div class="btn-group">
+        <button id="fontIncrease">A+</button>
+        <button id="fontDecrease">A-</button>
+        <button id="fontReset">回復預設</button>
+      </div>
+      <p style="font-size: 14px; color: #666; margin-bottom: 12px;">
+        用戶可用快捷鍵快速調整網頁字體尺寸。
+      </p>
+
+      <!-- 2. 字體顏色設定 -->
+      <div class="color-setting">
+        <label>字體顏色</label>
+        <div class="color-input">
+          <input type="text" id="fontColor" value="#000000" />
+          <div
+            class="color-picker"
+            id="fontColorPicker"
+            title="點擊選色或滴管取色">
+          </div>
+        </div>
+        <small style="color: #999; font-size: 12px; display: block; margin-top: 2px;">
+          預設字體顏色
+        </small>
+      </div>
+
+      <!-- 3. 背景顏色設定 -->
+      <div class="color-setting">
+        <label>背景顏色</label>
+        <div class="color-input">
+          <input type="text" id="bgColor" value="#ffffff" />
+          <div
+            class="color-picker"
+            id="bgColorPicker"
+            title="點擊選色或滴管取色">
+          </div>
+        </div>
+        <small style="color: #999; font-size: 12px; display: block; margin-top: 2px;">
+          預設背景顏色
+        </small>
+      </div>
+
+      <div class="btn-group" style="margin-bottom:12px;">
+        <button id="colorReset">回復預設</button>
+      </div>
+
+      <!-- 5. 複選框（超連結樣式） -->
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" id="linkUnderline" checked />
+          在超連接下劃線
+        </label>
+        <label>
+          <input type="checkbox" id="linkColor" checked />
+          彩色超連接
+        </label>
+      </div>
+
+      <!-- 6. 字體下拉選擇 -->
+      <div class="font-select">
+        <label>字體：</label>
+        <select class="font-dropdown" id="fontFamily">
+        <option value="Default Font" style="font-family: Arial, sans-serif;">Default Font</option>
+        <option value="Arial" style="font-family: Arial, sans-serif;">Arial</option>
+        <option value="Helvetica" style="font-family: Helvetica, sans-serif;">Helvetica</option>
+        <option value="sans-serif" style="font-family: sans-serif;">sans-serif</option>
+        <option value="Tahoma" style="font-family: Tahoma, sans-serif;">Tahoma</option>
+        <option value="Trebuchet MS" style="font-family: 'Trebuchet MS', sans-serif;">Trebuchet MS</option>
+        <option value="Verdana" style="font-family: Verdana, sans-serif;">Verdana</option>
+        <option value="Lucida Sans Unicode" style="font-family: 'Lucida Sans Unicode', sans-serif;">Lucida Sans Unicode</option>
+        <option value="Impact" style="font-family: Impact, fantasy;">Impact</option>
+        <option value="Arial Black" style="font-family: 'Arial Black', sans-serif;">Arial Black</option>
+        <option value="Comic Sans MS" style="font-family: 'Comic Sans MS', cursive;">Comic Sans MS</option>
+        <option value="cursive" style="font-family: cursive;">cursive</option>
+        <option value="Courier" style="font-family: Courier, monospace;">Courier</option>
+        <option value="Courier New" style="font-family: 'Courier New', monospace;">Courier New</option>
+        <option value="monospace" style="font-family: monospace;">monospace</option>
+        <option value="Lucida Console" style="font-family: 'Lucida Console', monospace;">Lucida Console</option>
+        <option value="Book Antiqua" style="font-family: 'Book Antiqua', serif;">Book Antiqua</option>
+        <option value="Bookman Old Style" style="font-family: 'Bookman Old Style', serif;">Bookman Old Style</option>
+        <option value="Georgia" style="font-family: Georgia, serif;">Georgia</option>
+        <option value="Palatino Linotype" style="font-family: 'Palatino Linotype', serif;">Palatino Linotype</option>
+        <option value="serif" style="font-family: serif;">serif</option>
+        <option value="Times" style="font-family: Times, serif;">Times</option>
+        <option value="Times New Roman" style="font-family: 'Times New Roman', serif;">Times New Roman</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 右欄：放「進階設定（5 個按鈕） + 套用設定」 -->
+    <div class="right-col">
+      <h3 class="section-title">進階設定：</h3>
+      <!-- 5 個進階按鈕 -->
+      <div class="advanced-btns">
+        <button id="saveTextSize">儲存每個網站的文字大小</button>
+        <button id="saveTextColor">儲存每個網站的文字顏色</button>
+        <button id="saveFontType">儲存每個網站的字體類型</button>
+        <button id="saveBgColor">儲存每個網站的背景顏色</button>
+        <button id="saveConfig">儲存/讀取組態檔案</button>
+      </div>
+      <!-- 底部「套用設定」按鈕 -->
+      <button class="apply-btn" id="applySettings">套用設定</button>
+    </div>
+  </div>
+
+  <script>
+    // 使用Chrome擴展V3的chrome.scripting API與內容腳本通信
+    async function getCurrentTab() {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      return tab;
+    }
+
+    // 執行內容腳本函數
+    async function executeScript(func, args = []) {
+      const tab = await getCurrentTab();
+      try {
+        await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: func,
+          args: args
+        });
+      } catch (err) {
+        console.error('腳本執行錯誤:', err);
+      }
+    }
+
+    // 字體大小調整
+    document.getElementById('fontIncrease').addEventListener('click', async () => {
+      await executeScript((() => {
+        document.body.style.fontSize = (parseInt(window.getComputedStyle(document.body).fontSize) + 1) + 'px';
+      }));
     });
 
-    document.getElementById('fontDecrease').addEventListener('click', () => {
-        sendMessageToActiveTab({ action: 'adjustFontSize', delta: -2 });
+    document.getElementById('fontDecrease').addEventListener('click', async () => {
+      await executeScript((() => {
+        document.body.style.fontSize = (parseInt(window.getComputedStyle(document.body).fontSize) - 1) + 'px';
+      }));
     });
 
-    document.getElementById('fontReset').addEventListener('click', () => {
-        sendMessageToActiveTab({ action: 'resetFont' });
+    document.getElementById('fontReset').addEventListener('click', async () => {
+      await executeScript((() => {
+        document.body.style.fontSize = '';
+      }));
     });
 
-    // 顏色重置按鈕
-    document.getElementById('colorReset').addEventListener('click', async () => {
-        try {
-            // 獲取全局默認顏色設置
-            const result = await chrome.storage.local.get(['globalSettings']);
-            const defaultColors = result.globalSettings || {
-                textColor: '#000000',
-                backgroundColor: '#ffffff'
-            };
-
-            // 更新表單
-            document.getElementById('fontColor').value = defaultColors.textColor;
-            document.getElementById('bgColor').value = defaultColors.backgroundColor;
-
-            // 應用設置
-            applyCurrentSettings();
-        } catch (error) {
-            console.error('重置顏色失敗:', error);
-        }
+    // 顏色重置
+    document.getElementById('colorReset').addEventListener('click', () => {
+      document.getElementById('fontColor').value = '#000000';
+      document.getElementById('bgColor').value = '#ffffff';
     });
 
-    // 顏色選擇器邏輯
+    // 顏色選擇器
     document.getElementById('fontColorPicker').addEventListener('click', () => {
-        openColorPicker('fontColor');
+      const colorInput = document.createElement('input');
+      colorInput.type = 'color';
+      colorInput.value = document.getElementById('fontColor').value;
+      colorInput.addEventListener('change', (e) => {
+        document.getElementById('fontColor').value = e.target.value;
+      });
+      colorInput.click();
     });
 
     document.getElementById('bgColorPicker').addEventListener('click', () => {
-        openColorPicker('bgColor');
+      const colorInput = document.createElement('input');
+      colorInput.type = 'color';
+      colorInput.value = document.getElementById('bgColor').value;
+      colorInput.addEventListener('change', (e) => {
+        document.getElementById('bgColor').value = e.target.value;
+      });
+      colorInput.click();
     });
 
-    // 進階設置按鈕
+    // 保存網站設置 - 使用chrome.storage.local存儲
     document.getElementById('saveTextSize').addEventListener('click', async () => {
-        await saveSiteSpecificSetting('fontSize');
+      const tab = await getCurrentTab();
+      const url = new URL(tab.url).hostname;
+      const [result] = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => window.getComputedStyle(document.body).fontSize
+      });
+
+      await chrome.storage.local.set({
+        [`${url}_textSize`]: result.result
+      });
+      alert('已保存當前網站文字大小設置');
     });
 
     document.getElementById('saveTextColor').addEventListener('click', async () => {
-        await saveSiteSpecificSetting('textColor');
+      const tab = await getCurrentTab();
+      const url = new URL(tab.url).hostname;
+      const fontColor = document.getElementById('fontColor').value;
+
+      await chrome.storage.local.set({
+        [`${url}_fontColor`]: fontColor
+      });
+      alert('已保存當前網站文字顏色設置');
     });
 
     document.getElementById('saveFontType').addEventListener('click', async () => {
-        await saveSiteSpecificSetting('fontFamily');
+      const tab = await getCurrentTab();
+      const url = new URL(tab.url).hostname;
+      const fontFamily = document.getElementById('fontFamily').value;
+
+      await chrome.storage.local.set({
+        [`${url}_fontFamily`]: fontFamily
+      });
+      alert('已保存當前網站字體類型設置');
     });
 
     document.getElementById('saveBgColor').addEventListener('click', async () => {
-        await saveSiteSpecificSetting('backgroundColor');
+      const tab = await getCurrentTab();
+      const url = new URL(tab.url).hostname;
+      const bgColor = document.getElementById('bgColor').value;
+
+      await chrome.storage.local.set({
+        [`${url}_bgColor`]: bgColor
+      });
+      alert('已保存當前網站背景顏色設置');
     });
 
-    document.getElementById('saveConfig').addEventListener('click', () => {
-        chrome.runtime.openOptionsPage();
+    // 配置文件處理
+    document.getElementById('saveConfig').addEventListener('click', async () => {
+      const allSettings = await chrome.storage.local.get(null);
+      const blob = new Blob([JSON.stringify(allSettings, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+
+      chrome.downloads.download({
+        url: url,
+        filename: 'font-manager-config.json'
+      });
     });
 
-    // 套用設定按鈕
-    document.getElementById('applySettings').addEventListener('click', () => {
-        applyCurrentSettings();
-    });
-}
+    // 應用設置
+    document.getElementById('applySettings').addEventListener('click', async () => {
+      const fontColor = document.getElementById('fontColor').value;
+      const bgColor = document.getElementById('bgColor').value;
+      const fontFamily = document.getElementById('fontFamily').value;
+      const linkUnderline = document.getElementById('linkUnderline').checked;
+      const linkColor = document.getElementById('linkColor').checked;
 
-// 打開顏色選擇器並同步值
-function openColorPicker(inputId) {
-    const colorInput = document.createElement('input');
-    colorInput.type = 'color';
-    colorInput.value = document.getElementById(inputId).value;
+      await executeScript(((fontColor, bgColor, fontFamily, linkUnderline, linkColor) => {
+        // 應用字體顏色
+        document.body.style.color = fontColor;
 
-    colorInput.addEventListener('change', (e) => {
-        document.getElementById(inputId).value = e.target.value;
-        // 即時應用顏色變更
-        applyCurrentSettings();
-    });
+        // 應用背景顏色
+        document.body.style.backgroundColor = bgColor;
 
-    colorInput.click();
-}
-
-// 加載當前頁面的設置到表單
-async function loadCurrentSettings() {
-    try {
-        // 獲取當前激活的標籤頁
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (!tab.url) return;
-
-        const url = new URL(tab.url);
-        const hostname = url.hostname;
-
-        // 從後台獲取設置
-        const response = await chrome.runtime.sendMessage({
-            action: 'getSettings',
-            hostname: hostname
-        });
-
-        if (response?.settings) {
-            const settings = response.settings;
-            // 更新表單值
-            document.getElementById('fontColor').value = settings.textColor || '#000000';
-            document.getElementById('bgColor').value = settings.backgroundColor || '#ffffff';
-            document.getElementById('fontFamily').value = settings.fontFamily || 'Default Font';
-            document.getElementById('linkUnderline').checked = settings.underlineLinks !== false;
-            document.getElementById('linkColor').checked = settings.colorLinks !== false;
-        }
-    } catch (error) {
-        console.error('加載當前設置失敗:', error);
-    }
-}
-
-// 應用當前表單設置到頁面
-function applyCurrentSettings() {
-    const settings = {
-        textColor: document.getElementById('fontColor').value,
-        backgroundColor: document.getElementById('bgColor').value,
-        fontFamily: document.getElementById('fontFamily').value,
-        underlineLinks: document.getElementById('linkUnderline').checked,
-        colorLinks: document.getElementById('linkColor').checked
-    };
-
-    sendMessageToActiveTab({
-        action: 'applySettings',
-        settings: settings
-    });
-}
-
-// 保存網站特定設置
-async function saveSiteSpecificSetting(type) {
-    try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        if (!tab.url) return;
-
-        const url = new URL(tab.url);
-        const hostname = url.hostname;
-
-        // 獲取當前設置
-        const response = await chrome.runtime.sendMessage({
-            action: 'getSettings',
-            hostname: hostname
-        });
-
-        if (!response?.settings) return;
-
-        // 構建要保存的設置對像
-        const currentSettings = response.settings;
-        const settingsToSave = {
-            ...currentSettings,
-            lastModified: new Date().toISOString()
-        };
-
-        // 根據按鈕類型更新特定設置
-        switch (type) {
-            case 'fontSize':
-                // 字體大小從當前頁面獲取
-                break;
-            case 'textColor':
-                settingsToSave.textColor = document.getElementById('fontColor').value;
-                break;
-            case 'fontFamily':
-                settingsToSave.fontFamily = document.getElementById('fontFamily').value;
-                break;
-            case 'backgroundColor':
-                settingsToSave.backgroundColor = document.getElementById('bgColor').value;
-                break;
+        // 應用字體
+        if (fontFamily !== 'Default Font') {
+          document.body.style.fontFamily = fontFamily;
+        } else {
+          document.body.style.fontFamily = '';
         }
 
-        // 保存設置
-        await chrome.runtime.sendMessage({
-            action: 'saveSettings',
-            hostname: hostname,
-            settings: settingsToSave
+        // 應用鏈接樣式
+        const links = document.querySelectorAll('a');
+        links.forEach(link => {
+          link.style.textDecoration = linkUnderline ? 'underline' : 'none';
+          if (!linkColor) {
+            link.style.color = fontColor;
+          } else {
+            link.style.color = ''; // 恢復默認
+          }
         });
+      }), [fontColor, bgColor, fontFamily, linkUnderline, linkColor]);
+    });
 
-        // 顯示成功通知
-        showNotification(`已保存 ${hostname} 的${getSettingTypeName(type)}設置`);
-    } catch (error) {
-        console.error('保存設置失敗:', error);
-        showNotification('保存設置失敗', 'error');
+    // 頁面加載時恢復保存的設置
+    async function loadSavedSettings() {
+      const tab = await getCurrentTab();
+      const url = new URL(tab.url).hostname;
+      const savedSettings = await chrome.storage.local.get([
+        `${url}_fontColor`,
+        `${url}_bgColor`,
+        `${url}_fontFamily`,
+      ]);
+
+      if (savedSettings[`${url}_fontColor`]) {
+        document.getElementById('fontColor').value = savedSettings[`${url}_fontColor`];
+      }
+      if (savedSettings[`${url}_bgColor`]) {
+        document.getElementById('bgColor').value = savedSettings[`${url}_bgColor`];
+      }
+      if (savedSettings[`${url}_fontFamily`]) {
+        document.getElementById('fontFamily').value = savedSettings[`${url}_fontFamily`];
+      }
     }
-}
 
-// 發送消息到當前激活的標籤頁
-async function sendMessageToActiveTab(message) {
-    try {
-        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        return await chrome.tabs.sendMessage(tab.id, message);
-    } catch (error) {
-        console.error('發送消息失敗:', error);
-    }
-}
-
-// 顯示臨時通知
-function showNotification(message, type = 'success') {
-    // 移除現有通知
-    const existing = document.getElementById('popup-notification');
-    if (existing) existing.remove();
-
-    // 創建新通知
-    const notification = document.createElement('div');
-    notification.id = 'popup-notification';
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 8px 16px;
-        border-radius: 4px;
-        color: white;
-        font-size: 14px;
-        z-index: 9999;
-        background: ${type === 'success' ? '#4285f4' : '#dc3545'};
-        transition: opacity 0.3s;
-    `;
-
-    document.body.appendChild(notification);
-
-    // 3秒後自動消失
-    setTimeout(() => {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
-
-// 獲取設置類型的顯示名稱
-function getSettingTypeName(type) {
-    const names = {
-        fontSize: '文字大小',
-        textColor: '文字顏色',
-        fontFamily: '字體類型',
-        backgroundColor: '背景顏色'
-    };
-    return names[type] || type;
-}
+    // 初始化時加載設置
+    loadSavedSettings();
+  </script>
+</body>
+</html>

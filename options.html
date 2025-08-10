@@ -95,8 +95,8 @@
             min-width: 120px;
         }
 
-        input[type="text"], 
-        input[type="number"], 
+        input[type="text"],
+        input[type="number"],
         select {
             padding: 10px 15px;
             border: 2px solid #e0e0e0;
@@ -106,8 +106,8 @@
             min-width: 150px;
         }
 
-        input[type="text"]:focus, 
-        input[type="number"]:focus, 
+        input[type="text"]:focus,
+        input[type="number"]:focus,
         select:focus {
             border-color: #4285f4;
             outline: none;
@@ -265,6 +265,44 @@
             position: absolute;
             left: -9999px;
         }
+
+        /* 新增自定義CSS選項樣式 */
+        .custom-css-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .warning-text {
+            color: #dc3545;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #fff5f5;
+            border-radius: 6px;
+        }
+
+        .css-options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .css-option-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        .css-option-item label {
+            font-weight: normal;
+            font-size: 0.9em;
+            min-width: auto;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -297,11 +335,29 @@
                     <div class="form-row">
                         <label>預設字體：</label>
                         <select id="globalFontFamily">
-                            <option value="Default Font">Default Font</option>
-                            <option value="Arial">Arial</option>
-                            <option value="Helvetica">Helvetica</option>
-                            <option value="Georgia">Georgia</option>
-                            <option value="Times New Roman">Times New Roman</option>
+                              <option value="Default Font" style="font-family: Arial, sans-serif;">Default Font</option>
+                              <option value="Arial" style="font-family: Arial, sans-serif;">Arial</option>
+                              <option value="Helvetica" style="font-family: Helvetica, sans-serif;">Helvetica</option>
+                              <option value="sans-serif" style="font-family: sans-serif;">sans-serif</option>
+                              <option value="Tahoma" style="font-family: Tahoma, sans-serif;">Tahoma</option>
+                              <option value="Trebuchet MS" style="font-family: 'Trebuchet MS', sans-serif;">Trebuchet MS</option>
+                              <option value="Verdana" style="font-family: Verdana, sans-serif;">Verdana</option>
+                              <option value="Lucida Sans Unicode" style="font-family: 'Lucida Sans Unicode', sans-serif;">Lucida Sans Unicode</option>
+                              <option value="Impact" style="font-family: Impact, fantasy;">Impact</option>
+                              <option value="Arial Black" style="font-family: 'Arial Black', sans-serif;">Arial Black</option>
+                              <option value="Comic Sans MS" style="font-family: 'Comic Sans MS', cursive;">Comic Sans MS</option>
+                              <option value="cursive" style="font-family: cursive;">cursive</option>
+                              <option value="Courier" style="font-family: Courier, monospace;">Courier</option>
+                              <option value="Courier New" style="font-family: 'Courier New', monospace;">Courier New</option>
+                              <option value="monospace" style="font-family: monospace;">monospace</option>
+                              <option value="Lucida Console" style="font-family: 'Lucida Console', monospace;">Lucida Console</option>
+                              <option value="Book Antiqua" style="font-family: 'Book Antiqua', serif;">Book Antiqua</option>
+                              <option value="Bookman Old Style" style="font-family: 'Bookman Old Style', serif;">Bookman Old Style</option>
+                              <option value="Georgia" style="font-family: Georgia, serif;">Georgia</option>
+                              <option value="Palatino Linotype" style="font-family: 'Palatino Linotype', serif;">Palatino Linotype</option>
+                              <option value="serif" style="font-family: serif;">serif</option>
+                              <option value="Times" style="font-family: Times, serif;">Times</option>
+                              <option value="Times New Roman" style="font-family: 'Times New Roman', serif;">Times New Roman</option>
                         </select>
                     </div>
                     <div class="form-row">
@@ -328,6 +384,108 @@
                 </div>
                 <button class="btn btn-secondary" id="refreshSiteList">刷新列表</button>
                 <button class="btn btn-danger" id="clearAllSiteSettings">清除所有網站設定</button>
+
+                <!-- 新增的自定義CSS選項 -->
+                <div class="custom-css-section">
+                    <h3 class="section-title">自定義CSS規則 (含!important)</h3>
+                    <p class="warning-text">⚠️ 警告：啟用這些選項可能會嚴重影響網站顯示效果，請謹慎使用！</p>
+
+                    <div class="css-options-grid" id="customCssOptions">
+                        <!-- 通知樣式設定 -->
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-notification-all">
+                            <label for="css-notification-all">字體管理器通知樣式 (all: initial)</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-notification-position">
+                            <label for="css-notification-position">通知固定位置 (position: fixed)</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-notification-bg">
+                            <label for="css-notification-bg">通知背景顏色</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-notification-color">
+                            <label for="css-notification-color">通知文字顏色</label>
+                        </div>
+
+                        <!-- 輸入欄位設定 -->
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-input-bg">
+                            <label for="css-input-bg">輸入框背景顏色</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-input-color">
+                            <label for="css-input-color">輸入框文字顏色</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-input-border">
+                            <label for="css-input-border">輸入框邊框樣式</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-input-padding">
+                            <label for="css-input-padding">輸入框內邊距</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-input-radius">
+                            <label for="css-input-radius">輸入框邊框圓角</label>
+                        </div>
+
+                        <!-- 按鈕設定 -->
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-button-bg">
+                            <label for="css-button-bg">按鈕背景顏色</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-button-color">
+                            <label for="css-button-color">按鈕文字顏色</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-button-border">
+                            <label for="css-button-border">按鈕邊框樣式</label>
+                        </div>
+
+                        <!-- 連結設定 -->
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-link-decoration">
+                            <label for="css-link-decoration">連結底線樣式</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-link-color">
+                            <label for="css-link-color">連結顏色</label>
+                        </div>
+
+                        <!-- 表格設定 -->
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-table-collapse">
+                            <label for="css-table-collapse">表格邊框合併</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-table-cell-border">
+                            <label for="css-table-cell-border">表格單元格邊框</label>
+                        </div>
+
+                        <!-- 其餘重要樣式設定 -->
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-code-bg">
+                            <label for="css-code-bg">程式碼區塊背景</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-quote-style">
+                            <label for="css-quote-style">引用區塊樣式</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-heading-sizes">
+                            <label for="css-heading-sizes">標題大小設定</label>
+                        </div>
+                        <div class="css-option-item">
+                            <input type="checkbox" id="css-image-maxwidth">
+                            <label for="css-image-maxwidth">圖片最大寬度</label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" style="margin-top: 20px;" id="saveCustomCssSettings">保存自定義CSS設定</button>
+                </div>
             </div>
 
             <!-- 配置管理 -->
@@ -361,7 +519,7 @@
                         <div>上次使用時間</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number" id="version">1.0.0</div>
+                        <div class="stat-number" id="version">0.1.0.0</div>
                         <div>版本號</div>
                     </div>
                 </div>

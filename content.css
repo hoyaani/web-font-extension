@@ -2,49 +2,49 @@
 
 /* 確保字體管理器的通知不受頁面樣式影響 */
 #font-manager-notification {
-    all: initial !important;
-    position: fixed !important;
-    top: 20px !important;
-    right: 20px !important;
-    background: rgba(66, 133, 244, 0.95) !important;
-    color: white !important;
-    padding: 12px 20px !important;
-    border-radius: 8px !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    z-index: 999999 !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif !important;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255,255,255,0.2) !important;
-    transition: all 0.3s ease !important;
-    pointer-events: none !important;
-    user-select: none !important;
-    line-height: 1.2 !important;
-    text-align: center !important;
-    min-width: 120px !important;
-    max-width: 300px !important;
-    word-wrap: break-word !important;
+    all: initial;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(66, 133, 244, 0.95);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 999999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1.2;
+    text-align: center;
+    min-width: 120px;
+    max-width: 300px;
+    word-wrap: break-word;
 }
 
 /* 確保輸入欄位在字體調整後仍保持可用性 */
 input:not([type="color"]):not([type="range"]):not([type="checkbox"]):not([type="radio"]),
 textarea,
 select {
-    background-color: white !important;
-    color: #333 !important;
-    border: 1px solid #ddd !important;
-    padding: 4px 8px !important;
-    border-radius: 4px !important;
+    background-color: white;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 4px 8px;
+    border-radius: 4px;
 }
 
 input:focus:not([type="color"]):not([type="range"]):not([type="checkbox"]):not([type="radio"]),
 textarea:focus,
 select:focus {
-    outline: 2px solid #4285f4 !important;
-    outline-offset: 1px !important;
-    border-color: #4285f4 !important;
-    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2) !important;
+    outline: 2px solid #4285f4;
+    outline-offset: 1px;
+    border-color: #4285f4;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
 }
 
 /* 確保按鈕保持可見性 */
@@ -52,44 +52,44 @@ button,
 input[type="button"],
 input[type="submit"],
 input[type="reset"] {
-    background-color: #f8f9fa !important;
-    color: #333 !important;
-    border: 1px solid #ddd !important;
-    padding: 6px 12px !important;
-    border-radius: 4px !important;
-    cursor: pointer !important;
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 button:hover,
 input[type="button"]:hover,
 input[type="submit"]:hover,
 input[type="reset"]:hover {
-    background-color: #e9ecef !important;
-    border-color: #adb5bd !important;
+    background-color: #e9ecef;
+    border-color: #adb5bd;
 }
 
 /* 確保表單標籤的可讀性 */
 label {
-    display: inline-block !important;
-    margin-bottom: 4px !important;
-    font-weight: 600 !important;
+    display: inline-block;
+    margin-bottom: 4px;
+    font-weight: 600;
 }
 
 /* 確保佔位符文字可見 */
 ::placeholder {
-    color: #6c757d !important;
-    opacity: 0.8 !important;
+    color: #6c757d;
+    opacity: 0.8;
 }
 
 /* 確保選擇文字的對比度 */
 ::selection {
-    background-color: #4285f4 !important;
-    color: white !important;
+    background-color: #4285f4;
+    color: white;
 }
 
 ::-moz-selection {
-    background-color: #4285f4 !important;
-    color: white !important;
+    background-color: #4285f4;
+    color: white;
 }
 
 /* 確保程式碼區塊的可讀性 */
@@ -98,11 +98,11 @@ pre,
 .highlight,
 [class*="code"],
 [class*="syntax"] {
-    background-color: #f8f9fa !important;
-    color: #212529 !important;
-    border: 1px solid #e9ecef !important;
-    border-radius: 4px !important;
-    font-family: 'Courier New', 'Monaco', 'Menlo', monospace !important;
+    background-color: #f8f9fa;
+    color: #212529;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
 }
 
 /* 確保導航連結的可見性 */
@@ -111,8 +111,8 @@ nav a,
 .navbar a,
 .menu a,
 [class*="nav"] a {
-    text-decoration: underline !important;
-    color: #007bff !important;
+    text-decoration: underline;
+    color: #007bff;
 }
 
 nav a:hover,
@@ -120,231 +120,230 @@ nav a:hover,
 .navbar a:hover,
 .menu a:hover,
 [class*="nav"] a:hover {
-    color: #0056b3 !important;
-    text-decoration: underline !important;
+    color: #0056b3;
+    text-decoration: underline;
 }
 
 /* 確保表格的可讀性 */
 table {
-    border-collapse: collapse !important;
-    border-spacing: 0 !important;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 th,
 td {
-    border: 1px solid #dee2e6 !important;
-    padding: 8px !important;
-    text-align: left !important;
+    border: 1px solid #dee2e6;
+    padding: 8px;
+    text-align: left;
 }
 
 th {
-    background-color: #f8f9fa !important;
-    font-weight: bold !important;
+    background-color: #f8f9fa;
+    font-weight: bold;
 }
 
 /* 確保引用區塊的可讀性 */
-/* 確保引用區塊的可讀性 */
 blockquote {
-    border-left: 4px solid #6c757d !important;
-    padding-left: 16px !important;
-    margin: 16px 0 !important;
-    font-style: italic !important;
-    background-color: #f8f9fa !important;
-    padding: 12px 16px !important;
-    border-radius: 0 4px 4px 0 !important;
+    border-left: 4px solid #6c757d;
+    padding-left: 16px;
+    margin: 16px 0;
+    font-style: italic;
+    background-color: #f8f9fa;
+    padding: 12px 16px;
+    border-radius: 0 4px 4px 0;
 }
 
 /* 確保列表的可讀性 */
 ul, ol {
-    padding-left: 20px !important;
-    margin: 8px 0 !important;
+    padding-left: 20px;
+    margin: 8px 0;
 }
 
 li {
-    margin-bottom: 4px !important;
-    line-height: 1.4 !important;
+    margin-bottom: 4px;
+    line-height: 1.4;
 }
 
 /* 確保標題的層次結構 */
 h1, h2, h3, h4, h5, h6 {
-    font-weight: bold !important;
-    margin: 16px 0 8px 0 !important;
-    line-height: 1.2 !important;
+    font-weight: bold;
+    margin: 16px 0 8px 0;
+    line-height: 1.2;
 }
 
-h1 { font-size: 2em !important; }
-h2 { font-size: 1.5em !important; }
-h3 { font-size: 1.25em !important; }
-h4 { font-size: 1.1em !important; }
-h5 { font-size: 1em !important; }
-h6 { font-size: 0.9em !important; }
+h1 { font-size: 2em; }
+h2 { font-size: 1.5em; }
+h3 { font-size: 1.25em; }
+h4 { font-size: 1.1em; }
+h5 { font-size: 1em; }
+h6 { font-size: 0.9em; }
 
 /* 確保段落間距 */
 p {
-    margin: 8px 0 !important;
-    line-height: 1.5 !important;
+    margin: 8px 0;
+    line-height: 1.5;
 }
 
 /* 確保圖片適應性 */
 img {
-    max-width: 100% !important;
-    height: auto !important;
-    border-radius: 4px !important;
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
 }
 
 /* 確保水平分隔線可見 */
 hr {
-    border: none !important;
-    border-top: 1px solid #dee2e6 !important;
-    margin: 16px 0 !important;
+    border: none;
+    border-top: 1px solid #dee2e6;
+    margin: 16px 0;
 }
 
 /* 確保搜尋框的可見性 */
 input[type="search"] {
-    background-color: white !important;
-    color: #333 !important;
-    border: 2px solid #ddd !important;
-    border-radius: 20px !important;
-    padding: 8px 16px !important;
+    background-color: white;
+    color: #333;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    padding: 8px 16px;
 }
 
 input[type="search"]:focus {
-    border-color: #4285f4 !important;
-    outline: none !important;
-    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2) !important;
+    border-color: #4285f4;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
 }
 
 /* 確保選單和下拉式選單的可見性 */
 .dropdown,
 .menu,
 .submenu {
-    background-color: white !important;
-    border: 1px solid #ddd !important;
-    border-radius: 4px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 /* 確保工具提示的可讀性 */
 [title]:hover::after,
 .tooltip {
-    background-color: #333 !important;
-    color: white !important;
-    border-radius: 4px !important;
-    padding: 4px 8px !important;
-    font-size: 12px !important;
-    z-index: 999999 !important;
+    background-color: #333;
+    color: white;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    z-index: 999999;
 }
 
 /* 確保模態對話框的可見性 */
 .modal,
 .dialog,
 .popup {
-    background-color: white !important;
-    color: #333 !important;
-    border: 1px solid #ddd !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+    background-color: white;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 /* 確保載入指示器的可見性 */
 .loading,
 .spinner,
 [class*="load"] {
-    color: #4285f4 !important;
+    color: #4285f4;
 }
 
 /* 確保警告和錯誤訊息的可見性 */
 .error,
 .warning,
 .alert {
-    padding: 12px !important;
-    border-radius: 4px !important;
-    margin: 8px 0 !important;
+    padding: 12px;
+    border-radius: 4px;
+    margin: 8px 0;
 }
 
 .error {
-    background-color: #f8d7da !important;
-    color: #721c24 !important;
-    border: 1px solid #f5c6cb !important;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
 .warning {
-    background-color: #fff3cd !important;
-    color: #856404 !important;
-    border: 1px solid #ffeaa7 !important;
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
 }
 
 .alert {
-    background-color: #d1ecf1 !important;
-    color: #0c5460 !important;
-    border: 1px solid #bee5eb !important;
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
 }
 
 /* 確保成功訊息的可見性 */
 .success {
-    background-color: #d4edda !important;
-    color: #155724 !important;
-    border: 1px solid #c3e6cb !important;
-    padding: 12px !important;
-    border-radius: 4px !important;
-    margin: 8px 0 !important;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    padding: 12px;
+    border-radius: 4px;
+    margin: 8px 0;
 }
 
 /* 確保高亮文字的可見性 */
 mark,
 .highlight {
-    background-color: #fff3cd !important;
-    color: #856404 !important;
-    padding: 2px 4px !important;
-    border-radius: 2px !important;
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 2px 4px;
+    border-radius: 2px;
 }
 
 /* 確保卡片和面板的可見性 */
 .card,
 .panel,
 .box {
-    background-color: white !important;
-    border: 1px solid #dee2e6 !important;
-    border-radius: 8px !important;
-    padding: 16px !important;
-    margin: 8px 0 !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 8px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* 確保徽章和標籤的可見性 */
 .badge,
 .tag,
 .label {
-    display: inline-block !important;
-    padding: 4px 8px !important;
-    background-color: #6c757d !important;
-    color: white !important;
-    border-radius: 12px !important;
-    font-size: 0.8em !important;
-    font-weight: 600 !important;
+    display: inline-block;
+    padding: 4px 8px;
+    background-color: #6c757d;
+    color: white;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
 }
 
 /* 確保進度條的可見性 */
 .progress {
-    background-color: #e9ecef !important;
-    border-radius: 4px !important;
-    height: 20px !important;
-    overflow: hidden !important;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    height: 20px;
+    overflow: hidden;
 }
 
 .progress-bar {
-    background-color: #4285f4 !important;
-    height: 100% !important;
-    transition: width 0.3s ease !important;
+    background-color: #4285f4;
+    height: 100%;
+    transition: width 0.3s ease;
 }
 
 /* 響應式設計調整 */
 @media (max-width: 768px) {
     #font-manager-notification {
-        top: 10px !important;
-        right: 10px !important;
-        left: 10px !important;
-        max-width: none !important;
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
     }
 }
 
@@ -353,25 +352,25 @@ mark,
     input:not([type="color"]):not([type="range"]):not([type="checkbox"]):not([type="radio"]),
     textarea,
     select {
-        background-color: #2d3748 !important;
-        color: #e2e8f0 !important;
-        border-color: #4a5568 !important;
+        background-color: #2d3748;
+        color: #e2e8f0;
+        border-color: #4a5568;
     }
-    
+
     button,
     input[type="button"],
     input[type="submit"],
     input[type="reset"] {
-        background-color: #4a5568 !important;
-        color: #e2e8f0 !important;
-        border-color: #718096 !important;
+        background-color: #4a5568;
+        color: #e2e8f0;
+        border-color: #718096;
     }
-    
+
     .card,
     .panel,
     .box {
-        background-color: #2d3748 !important;
-        border-color: #4a5568 !important;
-        color: #e2e8f0 !important;
+        background-color: #2d3748;
+        border-color: #4a5568;
+        color: #e2e8f0;
     }
 }
